@@ -66,11 +66,11 @@ const PERSONALIZATION_LABELS: Record<number, string> = {
 
 const INTRUSIVENESS_LEVELS = [0, 0.25, 0.5, 0.75, 1] as const;
 const INTRUSIVENESS_LABELS: Record<number, string> = {
-  0: "Very gentle; soft, open-ended questions only; let the user lead entirely.",
-  0.25: "Ask sparingly; avoid probing.",
-  0.5: "Balanced; follow the user's lead but ask when it helps.",
-  0.75: "More direct; you may ask probing questions when supportive.",
-  1: "More direct or probing when it feels supportive; still respect boundaries.",
+  0: "Context building only; follow the user's lead; gather and reflect back; avoid probing or emotional questions.",
+  0.25: "Mostly context building; ask sparingly and only to clarify or expand.",
+  0.5: "Balanced; mix context-building with occasional reflective questions.",
+  0.75: "More dynamic questions; ask how things made them feel, what they noticed, etc., when it fits.",
+  1: "Dynamic questions; actively ask \"how did this make you feel?\", \"what was that like?\", and other reflective, feeling-focused questions to deepen exploration.",
 };
 
 const DEFAULT_VOICE_ID = "21m00Tcm4TlvDq8ikWAM"; // Rachel
@@ -589,7 +589,7 @@ export const Personaplex = () => {
                   ))}
                 </select>
                 <p className="text-xs text-slate-500">
-                  {Math.round(personalization * 100)}%
+                  {Math.round(personalization * 100)}% — present only ↔ use journal memory
                 </p>
               </div>
               <div className="mt-3 space-y-1.5">
@@ -627,7 +627,7 @@ export const Personaplex = () => {
                   ))}
                 </select>
                 <p className="text-xs text-slate-500">
-                  {Math.round(intrusiveness * 100)}% — gentle ↔ more probing
+                  {Math.round(intrusiveness * 100)}% — context building ↔ dynamic questions
                 </p>
               </div>
               <div className="mt-3 flex-1 min-h-0 flex flex-col">
