@@ -3,6 +3,21 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 type VoiceOption = { voice_id: string; name: string };
 import { usePersonaplexSession, type TranscriptEntry } from "./hooks/usePersonaplexSession";
 
+const InfoTooltip = ({ text }: { text: string }) => (
+  <div className="relative inline-flex group">
+    <button
+      type="button"
+      className="flex h-4 w-4 items-center justify-center rounded-full border border-slate-600 bg-slate-900/70 text-[10px] font-semibold text-slate-400 hover:text-violet-300 hover:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-500/60"
+      aria-label={text}
+    >
+      i
+    </button>
+    <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 w-56 -translate-x-1/2 rounded-md border border-slate-700 bg-slate-900/95 px-3 py-2 text-[11px] leading-snug text-slate-100 opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100">
+      {text}
+    </div>
+  </div>
+);
+
 function TranscriptBubble({
   entry,
   isLogExpanded,
@@ -502,7 +517,10 @@ export const Personaplex = () => {
                 Settings
               </h2>
               <div>
-                <label htmlFor="personaplex-voice" className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
+                <label
+                  htmlFor="personaplex-voice"
+                  className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5"
+                >
                   Voice
                 </label>
                 <select
@@ -521,9 +539,15 @@ export const Personaplex = () => {
               </div>
               <div className="mt-5 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="personaplex-voice-dynamics" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Voice dynamics
-                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <label
+                      htmlFor="personaplex-voice-dynamics"
+                      className="text-xs font-medium text-slate-400 uppercase tracking-wider"
+                    >
+                      Voice dynamics
+                    </label>
+                    <InfoTooltip text="Adjust how calm or expressive the voice sounds." />
+                  </div>
                   <span className="text-xs text-slate-400 tabular-nums">{Math.round(voiceDynamics * 100)}%</span>
                 </div>
                 <div className="space-y-0.5">
@@ -556,9 +580,15 @@ export const Personaplex = () => {
               */}
               <div className="mt-5 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="personaplex-personalization" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Personalization
-                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <label
+                      htmlFor="personaplex-personalization"
+                      className="text-xs font-medium text-slate-400 uppercase tracking-wider"
+                    >
+                      Personalization
+                    </label>
+                    <InfoTooltip text="Control how much the assistant uses what you've shared in past entries when it responds." />
+                  </div>
                   <span className="text-xs text-slate-400 tabular-nums">{Math.round(personalization * 100)}%</span>
                 </div>
                 <div className="space-y-0.5">
@@ -600,9 +630,15 @@ export const Personaplex = () => {
               </div>
               <div className="mt-5 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="personaplex-intrusiveness" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
-                    Questioning style
-                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <label
+                      htmlFor="personaplex-intrusiveness"
+                      className="text-xs font-medium text-slate-400 uppercase tracking-wider"
+                    >
+                      Questioning style
+                    </label>
+                    <InfoTooltip text="Control how gentle or probing the assistant’s questions are. Lower mostly listens; higher adds more follow-up questions." />
+                  </div>
                   <span className="text-xs text-slate-400 tabular-nums">{Math.round(intrusiveness * 100)}%</span>
                 </div>
                 <div className="space-y-0.5">
@@ -651,7 +687,10 @@ export const Personaplex = () => {
                   aria-controls="personaplex-system-prompt-content"
                   id="personaplex-system-prompt-toggle"
                 >
-                  <span>System Prompt</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>System Prompt</span>
+                    <InfoTooltip text="Advanced: see the exact instructions the assistant follows. You usually don't need to change this." />
+                  </span>
                   <svg
                     className={`w-4 h-4 transition-transform ${systemPromptAccordionOpen ? "rotate-180" : ""}`}
                     fill="none"
