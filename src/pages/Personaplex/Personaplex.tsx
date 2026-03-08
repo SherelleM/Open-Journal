@@ -425,7 +425,7 @@ export const Personaplex = () => {
       </div>
 
       {/* Header */}
-      <header className="flex-none relative z-10 grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 sm:px-6 py-3 sm:py-4">
+      <header className="flex-none relative z-10 flex items-center justify-between gap-2 px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <h1 className="text-base sm:text-xl font-light tracking-widest text-slate-300 uppercase truncate">
             OpenJournal
@@ -435,14 +435,7 @@ export const Personaplex = () => {
             <span className="text-sm text-red-400">{errorMessage}</span>
           )}
         </div>
-        <div className="flex justify-center mt-1.5">
-          <ConnectButton
-            status={status}
-            onConnect={handleConnect}
-            onDisconnect={handleDisconnect}
-          />
-        </div>
-        <div className="flex items-center justify-end gap-1 sm:gap-2">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setView("session")}
@@ -693,6 +686,11 @@ export const Personaplex = () => {
             <div className="order-2 lg:order-none flex flex-col items-center justify-center gap-2 sm:gap-4 min-h-0 py-2 sm:py-4 lg:py-0 min-w-0 w-full">
               <div className="flex-none flex flex-col items-center gap-3">
                 <Orb state={orbState} thinkingProgress={thinkingProgress} />
+                <ConnectButton
+                  status={status}
+                  onConnect={handleConnect}
+                  onDisconnect={handleDisconnect}
+                />
                 {isVoiceMemoMode && isConnected && (
                   isVoiceMemoRecording ? (
                     <button
