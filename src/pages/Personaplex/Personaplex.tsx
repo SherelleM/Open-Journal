@@ -691,6 +691,13 @@ export const Personaplex = () => {
                   onConnect={handleConnect}
                   onDisconnect={handleDisconnect}
                 />
+                <p className="text-xs text-slate-500 text-center">
+                  {!isConnected
+                    ? "Connect to begin your journaling session."
+                    : isProcessing
+                      ? "Thinking..."
+                      : "Speak naturally. The AI is listening."}
+                </p>
                 {isVoiceMemoMode && isConnected && (
                   isVoiceMemoRecording ? (
                     <button
@@ -914,15 +921,8 @@ export const Personaplex = () => {
       </main>
 
       {/* Footer */}
-      <footer className="flex-none z-0 bg-slate-950/80 backdrop-blur-sm py-2 px-4 text-center space-y-2 border-t border-slate-800/60">
-        <p className="text-xs text-slate-500">
-          {!isConnected
-            ? "Connect to begin your journaling session."
-            : isProcessing
-              ? "Thinking..."
-              : "Speak naturally. The AI is listening."}
-        </p>
-        <div className="pt-2 space-y-1">
+      <footer className="flex-none z-0 bg-slate-950/80 backdrop-blur-sm py-2 px-4 text-center space-y-1 border-t border-slate-800/60">
+        <div className="space-y-1">
           <p className="text-[10px] text-slate-600">
             By John Stewart, Sherelle McDaniel, Aniyah Tucker, Dominique Sanchez, Andy Coto, Jackeline Garcia Ulloa
           </p>
