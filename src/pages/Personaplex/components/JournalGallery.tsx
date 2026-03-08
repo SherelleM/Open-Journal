@@ -177,37 +177,35 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
             tabIndex={0}
             onKeyDown={(e) => e.key === "Enter" && openModal(entry)}
           >
-            {/* Delete button - top-right corner */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteEntry(entry.id);
-              }}
-              className="absolute top-3 right-3 z-10 p-2 rounded-lg bg-slate-800/90 text-slate-400 hover:text-red-400 hover:bg-red-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50"
-              aria-label="Delete entry"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-            </button>
-
-            {/* Date header */}
-            <div className="px-5 py-3 border-b border-slate-700/50 flex-shrink-0">
+            {/* Date header with delete button */}
+            <div className="px-5 py-3 border-b border-slate-700/50 flex-shrink-0 flex items-center justify-between gap-2">
               <p className="text-sm font-medium text-slate-300 tracking-wide">
                 {getFormattedDate(entry)}
               </p>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteEntry(entry.id);
+                }}
+                className="shrink-0 p-2 rounded-lg bg-slate-800/90 text-slate-400 hover:text-red-400 hover:bg-red-500/20 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                aria-label="Delete entry"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
             </div>
 
             {/* Preview with fade-out */}
