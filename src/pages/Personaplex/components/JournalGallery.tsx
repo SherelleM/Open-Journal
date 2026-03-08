@@ -74,9 +74,16 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
     return lines.join("\n");
   }, [getFormattedDate]);
 
-  const handleAiThinkingLogs = useCallback(
+  const openAiThinkingLogs = useCallback(
     (entry: JournalEntry) => {
       const content = buildThinkingLogsContent(entry);
+      setThinkingLogsModal(content);
+    },
+    [buildThinkingLogsContent]
+  );
+
+  const downloadAiThinkingLogs = useCallback(
+    (content: string, entry: JournalEntry) => {
       const dateStr = new Date(entry.date).toISOString().slice(0, 10);
       const filename = `AI_Thinking_Logs_${dateStr}.txt`;
       const blob = new Blob([content], { type: "text/plain" });
@@ -86,10 +93,9 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
       a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-      setThinkingLogsModal(content);
-      onToast?.("Downloaded. Viewing logs.");
+      onToast?.("Downloaded.");
     },
-    [buildThinkingLogsContent, onToast]
+    [onToast]
   );
 
   const handleAiReformat = useCallback(
@@ -272,9 +278,9 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleAiThinkingLogs(selectedEntry)}
+                  onClick={() => openAiThinkingLogs(selectedEntry)}
                   className="px-3 py-2 rounded-lg bg-slate-700/50 text-slate-300 text-sm font-medium hover:bg-slate-600/50 transition-colors flex items-center gap-2"
-                  title="Download and view AI thinking logs (memory context)"
+                  title="View AI thinking logs (memory context)"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -348,7 +354,7 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
         </div>
       )}
 
-      {thinkingLogsModal !== null && (
+      {thinkingLogsModal !== null && selectedEntry && (
         <div
           className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md"
           onClick={() => setThinkingLogsModal(null)}
@@ -361,18 +367,43 @@ export const JournalGallery: FC<JournalGalleryProps> = ({
             className="bg-slate-900/95 border border-slate-700/80 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="px-6 py-4 border-b border-slate-700/80 flex justify-between items-center bg-slate-800/30">
+            <div className="px-6 py-4 border-b border-slate-700/80 flex justify-between items-center gap-2 bg-slate-800/30">
               <h3 className="text-lg font-medium text-slate-200 tracking-wide">
                 AI thinking logs
               </h3>
-              <button
-                type="button"
-                onClick={() => setThinkingLogsModal(null)}
-                className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
-                aria-label="Close"
-              >
-                ✕
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => downloadAiThinkingLogs(thinkingLogsModal, selectedEntry)}
+                  className="px-3 py-2 rounded-lg bg-slate-700/50 text-slate-300 text-sm font-medium hover:bg-slate-600/50 transition-colors flex items-center gap-2"
+                  title="Download as file"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  Download
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setThinkingLogsModal(null)}
+                  className="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 transition-colors"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto p-6 scrollbar">
               <pre className="font-sans text-sm text-slate-300 whitespace-pre-wrap break-words">
