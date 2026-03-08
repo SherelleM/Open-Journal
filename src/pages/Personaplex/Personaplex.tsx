@@ -907,7 +907,7 @@ export const Personaplex = () => {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-xs text-slate-500">Backend not reached. Start the Python backend and try again.</p>
+                      <p className="text-xs text-slate-500">We couldn't reach the app. Make sure everything is running and try again.</p>
                     )}
                   </div>
                 </div>

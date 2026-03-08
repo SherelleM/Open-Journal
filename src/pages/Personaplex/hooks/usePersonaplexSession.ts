@@ -30,6 +30,42 @@ const BACKEND_URL =
 
 export type TranscriptEntry = { role: "user" | "ai"; text: string; retrievalLog?: string };
 
+/** Turn technical error messages into plain language with a suggested next step. */
+function toFriendlyError(message: string): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("microphone not available") || lower.includes("mediadevices") || lower.includes("getusermedia")) {
+    return "Your microphone isn't available on this page. Open the app from the same device (e.g. type localhost in the address bar) or use a secure (https) link, then try again.";
+  }
+  if (lower.includes("microphone access denied") || lower.includes("microphone") && lower.includes("unavailable")) {
+    return "We can't use your microphone. Allow microphone access in your browser settings, then refresh and try again.";
+  }
+  if (lower.includes("live transcription connection failed") || lower.includes("could not start live transcription") || lower.includes("scribe")) {
+    return "We couldn't start listening. Check your internet connection and try again.";
+  }
+  if (lower.includes("request timed out") || lower.includes("abort") || lower.includes("timeout")) {
+    return "The assistant is taking too long to respond. Try again in a moment.";
+  }
+  if (lower.includes("playback failed")) {
+    return "We couldn't play the reply. Tap Play to try again, or read the conversation in the transcript.";
+  }
+  if (lower.includes("recording too short")) {
+    return "That was too short to hear. Try speaking for a few seconds, then tap Done.";
+  }
+  if (lower.includes("no speech detected")) {
+    return "We didn't catch any words. Speak a bit longer or move closer to the microphone, then try again.";
+  }
+  if (lower.includes("transcription failed") || lower.includes("transcription error")) {
+    return "We couldn't turn your speech into text. Check your microphone and try again.";
+  }
+  if (lower.includes("networkerror") || lower.includes("failed to fetch") || lower.includes("fetch") && lower.includes("resource") || lower.includes("backend") || lower.includes("not found") || lower.includes("404") || lower.includes("500")) {
+    return "We couldn't reach the app. Check your internet connection and that the app is running, then try again.";
+  }
+  if (lower.includes("api") || lower.includes("key") || lower.includes("configured") || lower.includes("server")) {
+    return "Something went wrong on our side. Please try again in a moment.";
+  }
+  return "Something went wrong. Please try again.";
+}
+
 const CHAT_FETCH_TIMEOUT_MS = 90_000;
 
 async function fetchInterviewerQuestion(
@@ -316,11 +352,11 @@ export const usePersonaplexSession = ({
         }
       } catch (err) {
         console.error("[Personaplex] Interviewer API error:", err);
-        const message =
+        const raw =
           err instanceof Error
             ? (err.name === "AbortError" ? "Request timed out. Check the backend and try again." : err.message)
             : "API error";
-        setErrorMessage(message);
+        setErrorMessage(toFriendlyError(raw));
         setStatus("error");
         if (!isVoiceMemoMode && isConnectedRef.current && startRecordingAfterAIRef.current) {
           startRecordingAfterAIRef.current(true);
@@ -521,7 +557,7 @@ export const usePersonaplexSession = ({
         wsRef.current = ws;
 
         ws.onerror = () => {
-          setErrorMessage("Live transcription connection failed");
+          setErrorMessage(toFriendlyError("Live transcription connection failed"));
           setStatus("error");
         };
 
@@ -623,7 +659,7 @@ export const usePersonaplexSession = ({
             } else if (type === "error" || type === "auth_error" || type === "quota_exceeded") {
               const err = msg.error ?? "Transcription error";
               console.error("[Personaplex] Scribe error:", err);
-              setErrorMessage(err);
+              setErrorMessage(toFriendlyError(err));
               stopRecording();
               if (isAiSpeakingRef.current) {
                 pendingReconnectRef.current = true;
@@ -672,14 +708,14 @@ export const usePersonaplexSession = ({
             onInterimTranscript("Listening...");
           } catch (err) {
             console.error("[Personaplex] Mic access error:", err);
-            setErrorMessage("Microphone access denied or unavailable");
+            setErrorMessage(toFriendlyError("Microphone access denied or unavailable"));
             setStatus("error");
             ws.close();
           }
         };
       } catch (err) {
         console.error("[Personaplex] Scribe token error:", err);
-        setErrorMessage(err instanceof Error ? err.message : "Could not start live transcription");
+        setErrorMessage(toFriendlyError(err instanceof Error ? err.message : "Could not start live transcription"));
         setStatus("error");
       }
     };
@@ -748,7 +784,7 @@ export const usePersonaplexSession = ({
       setErrorMessage(null);
     } catch (err) {
       console.error("[Personaplex] Voice memo start error:", err);
-      setErrorMessage("Microphone access denied or unavailable");
+      setErrorMessage(toFriendlyError("Microphone access denied or unavailable"));
     }
   }, [isVoiceMemoRecording]);
 
@@ -765,11 +801,11 @@ export const usePersonaplexSession = ({
     };
     audioEl.onerror = () => {
       URL.revokeObjectURL(url);
-      setErrorMessage("Playback failed");
+      setErrorMessage(toFriendlyError("Playback failed"));
     };
     audioEl.play().catch(() => {
       URL.revokeObjectURL(url);
-      setErrorMessage("Playback failed");
+      setErrorMessage(toFriendlyError("Playback failed"));
     });
   }, []);
 
@@ -789,7 +825,7 @@ export const usePersonaplexSession = ({
           return;
         }
         if (chunks.length === 0) {
-          setErrorMessage("Recording too short");
+          setErrorMessage(toFriendlyError("Recording too short"));
           resolve();
           return;
         }
@@ -801,11 +837,11 @@ export const usePersonaplexSession = ({
             onInterimTranscript("");
             processUserInput(text);
           } else if (!text) {
-            setErrorMessage("No speech detected");
+            setErrorMessage(toFriendlyError("No speech detected"));
           }
         } catch (err) {
           console.error("[Personaplex] Voice memo transcribe error:", err);
-          setErrorMessage(err instanceof Error ? err.message : "Transcription failed");
+          setErrorMessage(toFriendlyError(err instanceof Error ? err.message : "Transcription failed"));
         }
         resolve();
       };

@@ -91,7 +91,12 @@ export function MemoryDiagram({ onRefreshStats }: MemoryDiagramProps) {
     } catch (err) {
       if (currentId !== renderIdRef.current) return;
       setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Failed to load diagram");
+      const raw = err instanceof Error ? err.message : "Failed to load diagram";
+      setErrorMessage(
+        /backend|fetch|network|404|500|couldn't reach/i.test(raw)
+          ? "We couldn't load your memory map. Check that the app is running and try again."
+          : "Something went wrong loading the map. Tap Refresh to try again."
+      );
       if (containerRef.current) {
         containerRef.current.innerHTML = "";
       }
