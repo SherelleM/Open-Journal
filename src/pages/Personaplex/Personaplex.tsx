@@ -92,6 +92,7 @@ const FALLBACK_VOICES: VoiceOption[] = [
 export const Personaplex = () => {
   const [personalization, setPersonalization] = useState(0.5);
   const [intrusiveness, setIntrusiveness] = useState(0.5);
+  const [systemPromptAccordionOpen, setSystemPromptAccordionOpen] = useState(false);
   const [voices, setVoices] = useState<VoiceOption[]>(FALLBACK_VOICES);
   const [selectedVoiceId, setSelectedVoiceId] = useState(DEFAULT_VOICE_ID);
   const [voiceDynamics, setVoiceDynamics] = useState(0.5);
@@ -631,17 +632,42 @@ export const Personaplex = () => {
                 </p>
               </div>
               <div className="mt-3 flex-1 min-h-0 flex flex-col">
-                <label htmlFor="personaplex-text-prompt" className="block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5">
-                  System Prompt
-                </label>
-                <textarea
-                  id="personaplex-text-prompt"
-                  value={textPrompt}
-                  readOnly
-                  rows={4}
-                  className="w-full min-w-0 px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm resize-none min-h-[72px] max-h-[120px] overflow-auto"
-                  aria-label="System prompt (updates with personalization and questioning style)"
-                />
+                <button
+                  type="button"
+                  onClick={() => setSystemPromptAccordionOpen((open) => !open)}
+                  className="flex items-center justify-between w-full text-left text-xs font-medium text-slate-400 uppercase tracking-wider py-1.5 rounded hover:text-slate-300 hover:bg-slate-800/50 transition-colors"
+                  aria-expanded={systemPromptAccordionOpen}
+                  aria-controls="personaplex-system-prompt-content"
+                  id="personaplex-system-prompt-toggle"
+                >
+                  <span>System Prompt</span>
+                  <svg
+                    className={`w-4 h-4 transition-transform ${systemPromptAccordionOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {systemPromptAccordionOpen && (
+                  <div
+                    id="personaplex-system-prompt-content"
+                    role="region"
+                    aria-labelledby="personaplex-system-prompt-toggle"
+                    className="mt-1.5"
+                  >
+                    <textarea
+                      id="personaplex-text-prompt"
+                      value={textPrompt}
+                      readOnly
+                      rows={4}
+                      className="w-full min-w-0 px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm resize-none min-h-[72px] max-h-[120px] overflow-auto"
+                      aria-label="System prompt (updates with personalization and questioning style)"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
