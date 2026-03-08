@@ -631,30 +631,27 @@ export const usePersonaplexSession = ({
                 speechBufferRef.current.push(text);
                 onInterimTranscript(speechBufferRef.current.join(" "));
 
-                /* Manual mode (commented out in case we want to restore):
-                if (manualModeRef.current) {
+                // When user clicked "I'm done speaking", collect committed chunks and process
+                if (pendingManualCommitRef.current) {
                   manualBufferRef.current.push(text);
-                  if (pendingManualCommitRef.current) {
-                    if (pendingManualCommitTimeoutRef.current) {
-                      clearTimeout(pendingManualCommitTimeoutRef.current);
-                      pendingManualCommitTimeoutRef.current = null;
-                    }
+                  if (pendingManualCommitTimeoutRef.current) {
+                    clearTimeout(pendingManualCommitTimeoutRef.current);
+                    pendingManualCommitTimeoutRef.current = null;
+                  }
+                  pendingManualCommitTimeoutRef.current = setTimeout(() => {
+                    pendingManualCommitTimeoutRef.current = null;
                     const fullText = manualBufferRef.current.join(" ").trim();
                     manualBufferRef.current = [];
+                    speechBufferRef.current = [];
                     pendingManualCommitRef.current = false;
                     stopRecording();
+                    onInterimTranscript("");
                     if (fullText) {
-                      log("Processing (user clicked Done)");
+                      log("Processing (user clicked I'm done speaking):", fullText.slice(0, 50));
                       processUserInput(fullText);
                     }
-                  } else {
-                    log("Buffered chunk (waiting for Done click)");
-                    onInterimTranscript(manualBufferRef.current.join(" "));
-                  }
-                } else {
-                  ... VAD branch is above ...
+                  }, 200);
                 }
-                */
               }
             } else if (type === "error" || type === "auth_error" || type === "quota_exceeded") {
               const err = msg.error ?? "Transcription error";

@@ -52,10 +52,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({
         />
       </svg>
       {status === "connecting"
-        ? "Connecting..."
+        ? "Starting..."
         : isConnected
-          ? "Disconnect"
-          : "Connect"}
+          ? "End journal session"
+          : "Start session"}
     </button>
   );
 };

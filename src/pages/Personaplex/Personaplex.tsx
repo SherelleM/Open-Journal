@@ -32,12 +32,14 @@ function TranscriptBubble({
   return (
     <div className={`text-sm flex ${isUser ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[85%] break-words ${
-          isUser ? "text-violet-200 text-right" : "text-slate-300 text-left"
+        className={`max-w-[85%] break-words rounded-2xl px-4 py-2.5 ${
+          isUser
+            ? "bg-violet-600/30 text-violet-200 text-right border border-violet-500/30"
+            : "bg-slate-800/60 text-slate-300 text-left border border-slate-700/50"
         }`}
       >
-        <span className="font-medium opacity-80 block mb-0.5">
-          {isUser ? "You" : "AI"}
+        <span className="font-medium opacity-90 block mb-1 text-xs uppercase tracking-wider">
+          {isUser ? "You" : "AI Assistant"}
         </span>
         {entry.text}
         {hasLog && (
@@ -50,7 +52,7 @@ function TranscriptBubble({
               {isLogExpanded ? "Hide" : "Show"} memory context (vector DB)
             </button>
             {isLogExpanded && (
-              <pre className="mt-1.5 p-2 rounded bg-slate-800/80 text-slate-400 text-xs whitespace-pre-wrap break-words border border-slate-700/50 max-h-48 overflow-y-auto">
+              <pre className="mt-1.5 p-2 rounded-lg bg-slate-800/80 text-slate-400 text-xs whitespace-pre-wrap break-words border border-slate-700/50 max-h-48 overflow-y-auto">
                 {entry.retrievalLog}
               </pre>
             )}
@@ -732,11 +734,17 @@ export const Personaplex = () => {
                 />
                 <p className="text-xs text-slate-500 text-center">
                   {!isConnected
-                    ? "Connect to begin your journaling session."
+                    ? "Start session to begin journaling."
                     : isProcessing
-                      ? "Thinking..."
-                      : "Speak naturally. The AI is listening."}
+                      ? "One moment while the assistant responds."
+                      : "Speak naturally. The assistant is listening."}
                 </p>
+                {isConnected && (
+                  <div className="text-[11px] text-slate-500 text-center space-y-1">
+                    <p>When you're finished, say "I'm done open journal" or tap the button below to end your turn.</p>
+                    <p>Say "open journal" to interrupt the AI assistant.</p>
+                  </div>
+                )}
                 {isVoiceMemoMode && isConnected && (
                   isVoiceMemoRecording ? (
                     <button
@@ -764,11 +772,6 @@ export const Personaplex = () => {
                     </button>
                   ) : null
                 )}
-                {/* Manual mode: "Done speaking" button (commented out)
-                {!isVoiceMemoMode && isConnected && manualMode && isUserSpeaking && (
-                  <button type="button" onClick={commitManual} ...>Done speaking</button>
-                )}
-                */}
               </div>
             </div>
 
@@ -805,8 +808,8 @@ export const Personaplex = () => {
                     ))}
                     {interimTranscript && (
                       <div className="flex justify-end">
-                        <div className="max-w-[85%] break-words text-violet-200/80 text-right italic">
-                          <span className="font-medium opacity-80 block mb-0.5">
+                        <div className="max-w-[85%] break-words rounded-2xl px-4 py-2.5 bg-violet-600/20 text-violet-200/90 text-right italic border border-violet-500/20">
+                          <span className="font-medium opacity-90 block mb-1 text-xs uppercase tracking-wider not-italic">
                             You (speaking...)
                           </span>
                           {interimTranscript}
@@ -816,6 +819,18 @@ export const Personaplex = () => {
                   </>
                 )}
               </div>
+              {!isVoiceMemoMode && isConnected && (
+                <div className="flex-none shrink-0 p-3 border-t border-slate-700/50">
+                  <button
+                    type="button"
+                    onClick={commitManual}
+                    disabled={isAiSpeaking || isProcessing}
+                    className="w-full px-4 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 bg-slate-700/80 hover:bg-slate-600/80 text-slate-200 border border-slate-600/80 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate-700/80"
+                  >
+                    I'm done open journal
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
