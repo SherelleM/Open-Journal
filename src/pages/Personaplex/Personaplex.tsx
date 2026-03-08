@@ -526,23 +526,29 @@ export const Personaplex = () => {
                   ))}
                 </select>
               </div>
-              <div className="mt-3 space-y-1.5">
-                <label htmlFor="personaplex-voice-dynamics" className="block text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Voice dynamics
-                </label>
-                <input
-                  id="personaplex-voice-dynamics"
-                  type="range"
-                  min={0}
-                  max={100}
-                  value={Math.round(voiceDynamics * 100)}
-                  onChange={(e) => setVoiceDynamics(Number(e.target.value) / 100)}
-                  disabled={isConnected}
-                  className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
-                />
-                <p className="text-xs text-slate-500">
-                  {Math.round(voiceDynamics * 100)}% — calmer ↔ more expressive
-                </p>
+              <div className="mt-5 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="personaplex-voice-dynamics" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    Voice dynamics
+                  </label>
+                  <span className="text-xs text-slate-400 tabular-nums">{Math.round(voiceDynamics * 100)}%</span>
+                </div>
+                <div className="space-y-0.5">
+                  <input
+                    id="personaplex-voice-dynamics"
+                    type="range"
+                    min={0}
+                    max={100}
+                    value={Math.round(voiceDynamics * 100)}
+                    onChange={(e) => setVoiceDynamics(Number(e.target.value) / 100)}
+                    disabled={isConnected}
+                    className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
+                  />
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>Calmer</span>
+                    <span>More Expressive</span>
+                  </div>
+                </div>
               </div>
               {/* Manual mode (commented out – single flow: say "I'm done open journal" to stop)
               {!isVoiceMemoMode && (
@@ -555,83 +561,95 @@ export const Personaplex = () => {
                 </div>
               )}
               */}
-              <div className="mt-3 space-y-1.5">
-                <label htmlFor="personaplex-personalization" className="block text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Personalization
-                </label>
-                <div className="hidden sm:block">
-                  <input
-                    id="personaplex-personalization"
-                    type="range"
-                    min={0}
-                    max={PERSONALIZATION_LEVELS.length - 1}
-                    step={1}
-                    value={Math.max(0, PERSONALIZATION_LEVELS.findIndex((p) => p === personalization))}
-                    onChange={(e) => setPersonalization(PERSONALIZATION_LEVELS[Number(e.target.value)])}
-                    disabled={isConnected}
-                    className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
-                    aria-valuenow={Math.round(personalization * 100)}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuetext={`${Math.round(personalization * 100)}%`}
-                  />
+              <div className="mt-5 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="personaplex-personalization" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    Personalization
+                  </label>
+                  <span className="text-xs text-slate-400 tabular-nums">{Math.round(personalization * 100)}%</span>
                 </div>
-                <select
-                  aria-label="Personalization level"
-                  value={personalization}
-                  onChange={(e) => setPersonalization(Number(e.target.value))}
-                  disabled={isConnected}
-                  className="sm:hidden w-full px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
-                >
-                  {PERSONALIZATION_LEVELS.map((p) => (
-                    <option key={p} value={p}>
-                      {Math.round(p * 100)}%
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-slate-500">
-                  {Math.round(personalization * 100)}% — present only ↔ use journal memory
-                </p>
-              </div>
-              <div className="mt-3 space-y-1.5">
-                <label htmlFor="personaplex-intrusiveness" className="block text-xs font-medium text-slate-400 uppercase tracking-wider">
-                  Questioning style
-                </label>
-                <div className="hidden sm:block">
-                  <input
-                    id="personaplex-intrusiveness"
-                    type="range"
-                    min={0}
-                    max={INTRUSIVENESS_LEVELS.length - 1}
-                    step={1}
-                    value={Math.max(0, INTRUSIVENESS_LEVELS.findIndex((p) => p === intrusiveness))}
-                    onChange={(e) => setIntrusiveness(INTRUSIVENESS_LEVELS[Number(e.target.value)])}
+                <div className="space-y-0.5">
+                  <div className="hidden sm:block">
+                    <input
+                      id="personaplex-personalization"
+                      type="range"
+                      min={0}
+                      max={PERSONALIZATION_LEVELS.length - 1}
+                      step={1}
+                      value={Math.max(0, PERSONALIZATION_LEVELS.findIndex((p) => p === personalization))}
+                      onChange={(e) => setPersonalization(PERSONALIZATION_LEVELS[Number(e.target.value)])}
+                      disabled={isConnected}
+                      className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
+                      aria-valuenow={Math.round(personalization * 100)}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuetext={`${Math.round(personalization * 100)}%`}
+                    />
+                  </div>
+                  <select
+                    aria-label="Personalization level"
+                    value={personalization}
+                    onChange={(e) => setPersonalization(Number(e.target.value))}
                     disabled={isConnected}
-                    className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
-                    aria-valuenow={Math.round(intrusiveness * 100)}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuetext={`${Math.round(intrusiveness * 100)}%`}
-                  />
+                    className="sm:hidden w-full px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
+                  >
+                    {PERSONALIZATION_LEVELS.map((p) => (
+                      <option key={p} value={p}>
+                        {Math.round(p * 100)}%
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>Present Only</span>
+                    <span>Use Journal Memory</span>
+                  </div>
                 </div>
-                <select
-                  aria-label="Questioning style"
-                  value={intrusiveness}
-                  onChange={(e) => setIntrusiveness(Number(e.target.value))}
-                  disabled={isConnected}
-                  className="sm:hidden w-full px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
-                >
-                  {INTRUSIVENESS_LEVELS.map((p) => (
-                    <option key={p} value={p}>
-                      {Math.round(p * 100)}%
-                    </option>
-                  ))}
-                </select>
-                <p className="text-xs text-slate-500">
-                  {Math.round(intrusiveness * 100)}% — context building ↔ dynamic questions
-                </p>
               </div>
-              <div className="mt-3 flex-1 min-h-0 flex flex-col">
+              <div className="mt-5 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="personaplex-intrusiveness" className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                    Questioning style
+                  </label>
+                  <span className="text-xs text-slate-400 tabular-nums">{Math.round(intrusiveness * 100)}%</span>
+                </div>
+                <div className="space-y-0.5">
+                  <div className="hidden sm:block">
+                    <input
+                      id="personaplex-intrusiveness"
+                      type="range"
+                      min={0}
+                      max={INTRUSIVENESS_LEVELS.length - 1}
+                      step={1}
+                      value={Math.max(0, INTRUSIVENESS_LEVELS.findIndex((p) => p === intrusiveness))}
+                      onChange={(e) => setIntrusiveness(INTRUSIVENESS_LEVELS[Number(e.target.value)])}
+                      disabled={isConnected}
+                      className="w-full h-2 rounded-full bg-slate-600 accent-violet-500 disabled:opacity-60"
+                      aria-valuenow={Math.round(intrusiveness * 100)}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuetext={`${Math.round(intrusiveness * 100)}%`}
+                    />
+                  </div>
+                  <select
+                    aria-label="Questioning style"
+                    value={intrusiveness}
+                    onChange={(e) => setIntrusiveness(Number(e.target.value))}
+                    disabled={isConnected}
+                    className="sm:hidden w-full px-3 py-2 rounded-lg bg-slate-900/80 border border-slate-700/50 text-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
+                  >
+                    {INTRUSIVENESS_LEVELS.map((p) => (
+                      <option key={p} value={p}>
+                        {Math.round(p * 100)}%
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>Context Building</span>
+                    <span>Dynamic Questions</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-5 flex-1 min-h-0 flex flex-col">
                 <button
                   type="button"
                   onClick={() => setSystemPromptAccordionOpen((open) => !open)}
